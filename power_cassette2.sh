@@ -2,12 +2,11 @@
 ###
 #
 # *Author:  Mengqing Wu <mengqing.wu@desy.de>
-# *Date:    2019-04-09
+# *Date:    2019-04-30
 # *Project: Lycoris
 # *Description: 
-#   - DAQ board @ LV Channel 4 (12V);
-#   - KPiX AVDD @ LV channel 0 (3.0V);
-#   - KPiX DVDD @ LV channel 1 (3.0V);
+#   - Master AVDD @ LV channel 6 (3.0V);
+#   - Master DVDD @ LV channel 7 (3.0V);
 # 
 ####
 
@@ -19,35 +18,26 @@ res0=$( snmpget -v 2c -m +WIENER-CRATE-MIB -c guru  $WienerAddr outputVoltage.u0
 res1=$( snmpget -v 2c -m +WIENER-CRATE-MIB -c guru  $WienerAddr outputVoltage.u1 | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
 res4=$( snmpget -v 2c -m +WIENER-CRATE-MIB -c guru  $WienerAddr outputVoltage.u4 | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
 
-echo  "[info] Check AVDD_Master input @ Chn0 ?= 3V..."
+echo  "[info] Check AVDD_Master input @ Chn6 ?= 3V..."
 if [[ $res0 == *3.00* ]];
 then
     echo -e "\tAVDD Master Verified." # String Partially Match
 else
     echo "No Match"
-    snmpset -v 2c -m +WIENER-CRATE-MIB -c guru  $WienerAddr outputVoltage.u0 F 3
+    snmpset -v 2c -m +WIENER-CRATE-MIB -c guru  $WienerAddr outputVoltage.u6 F 3
     #snmpget -v 2c -m +WIENER-CRATE-MIB -c guru  $WienerAddr outputVoltage.u0
 fi
 
-echo  "[info] Check DVDD_Master input @ Chn1 ?= 3V..."
+echo  "[info] Check DVDD_Master input @ Chn7 ?= 3V..."
 if [[ $res1 == *3.00* ]];
 then
     echo -e "\tDVDD Master Verified." # String Partially Match
 else
     echo "No Match"
-    snmpset -v 2c -m +WIENER-CRATE-MIB -c guru  $WienerAddr outputVoltage.u1 F 3
+    snmpset -v 2c -m +WIENER-CRATE-MIB -c guru  $WienerAddr outputVoltage.u7 F 3
     #snmpget -v 2c -m +WIENER-CRATE-MIB -c guru  $WienerAddr outputVoltage.u1
 fi
 
-# echo  "[info] Check DAQ board power @ Chn4 ?= 12V..."
-# if [[ $res4 == *12.00* ]];
-# then
-#     echo -e "\tDAQ Voltage Verified." # String Partially Match
-# else
-#     echo "No Match"
-#     snmpset -v 2c -m +WIENER-CRATE-MIB -c guru  $WienerAddr outputVoltage.u4 F 12
-#     #snmpget -v 2c -m +WIENER-CRATE-MIB -c guru  $WienerAddr outputVoltage.u4
-# fi
 
 #--- Turn it on ---#
 
@@ -74,7 +64,6 @@ else
     exit
 fi
 
-snmpset -v 2c -m +WIENER-CRATE-MIB -c guru  $WienerAddr outputSwitch.u0 i $switch
-snmpset -v 2c -m +WIENER-CRATE-MIB -c guru  $WienerAddr outputSwitch.u1 i $switch
-#snmpset -v 2c -m +WIENER-CRATE-MIB -c guru  $WienerAddr outputSwitch.u4 i $switch
+snmpset -v 2c -m +WIENER-CRATE-MIB -c guru  $WienerAddr outputSwitch.u6 i $switch
+snmpset -v 2c -m +WIENER-CRATE-MIB -c guru  $WienerAddr outputSwitch.u7 i $switch
 
